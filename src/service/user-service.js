@@ -1,8 +1,7 @@
 const userRepository = require("../repository/user-repository.js");
 const { JWT_KEY } = require("../config/index.js");
 const jwt = require("jsonwebtoken");
-const bcrypt = require('bcrypt')
-
+const bcrypt = require("bcrypt");
 
 class userService {
   constructor() {
@@ -14,6 +13,29 @@ class userService {
       return user;
     } catch (err) {
       console.log("Error in service layer:", err);
+      throw err;
+    }
+  }
+
+  async signIn(userEmail, userPassword) {
+    try {
+      // step1 -> User enter email pass we fetch whole attribute of that email
+      const getData = await this.userRepository.getByEmail(userEmail);
+      const comparePasswordResult = await this.comparePassword(
+        userPassword,
+        getData.password
+      );
+      if (!comparePasswordResult) {
+        console.log("password does not match");
+        throw new Error("Incorrect Password");
+      }
+      const genrateToken = this.createToken({
+        email: getData.email,
+        id: getData.id,
+      });
+      return genrateToken;
+    } catch (err) {
+      console.log("Error while signing", err);
       throw err;
     }
   }
@@ -37,12 +59,12 @@ class userService {
     }
   }
 
-  comparePassword(userInputPassword,encryptedPassword){
+  comparePassword(userInputPassword, encryptedPassword) {
     try {
-      const response = bcrypt.compareSync(userInputPassword,encryptedPassword);
+      const response = bcrypt.compareSync(userInputPassword, encryptedPassword);
       return response;
     } catch (err) {
-      console.log("the comparePassword is not working")
+      console.log("the comparePassword is not working");
       throw err;
     }
   }
