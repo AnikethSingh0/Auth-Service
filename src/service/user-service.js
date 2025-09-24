@@ -17,6 +17,26 @@ class userService {
     }
   }
 
+  async isAuthorised(token) {
+  try {
+    const tokenVerifyResponse = this.verifyToken(token); 
+    if (!tokenVerifyResponse) {
+      throw new Error("Token verification on authorization failed");
+    }
+
+    const response = await this.userRepository.get(tokenVerifyResponse.id);
+    if (!response) {
+      throw new Error("The token corresponding email does not exist");
+    }
+
+    return response.id;
+  } catch (error) {
+    console.log("Error in service layer:", error);
+    throw error;
+  }
+}
+
+
   async signIn(userEmail, userPassword) {
     try {
       // step1 -> User enter email pass we fetch whole attribute of that email
@@ -51,7 +71,7 @@ class userService {
   }
   verifyToken(token) {
     try {
-      const response = jwt.sign(token, JWT_KEY);
+      const response = jwt.verify(token, JWT_KEY);
       return response;
     } catch (err) {
       console.log("Error while verifing token", err);

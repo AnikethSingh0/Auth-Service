@@ -15,10 +15,10 @@ const startServer = async () => {
   app.use(express.urlencoded({ extended: true }));
 
 //   const response = new UserService();
-//   const dada = await response.createToken({ email: "dada@gmail.com", id: 3 });
+  //  const dada = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3R1c2VyM0BleGFtcGxlLmNvbSIsImlkIjozLCJpYXQiOjE3NTg2NzU4NzksImV4cCI6MTc1ODY3OTQ3OX0.0W8lrc0aNZHui_MZDWl3ywFYNFNXI_p3fHuliPdgRiA";
 
-//   var decoded = jwt.verify(dada, JWT_KEY);
-//   console.log(decoded);
+  //  var decoded = jwt.verify(dada, JWT_KEY);
+  //  console.log(decoded);
   //console.log(dada)
 
   app.use("/api", apiRoutes);
