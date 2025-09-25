@@ -1,4 +1,4 @@
-const { User } = require("../models/index");
+const { User, Role } = require("../models/index");
 
 class userRepository {
   async create(data) {
@@ -16,7 +16,7 @@ class userRepository {
       const user = await User.destroy({
         where: {
           id: userId,
-        }
+        },
       });
       return user;
     } catch (err) {
@@ -38,17 +38,38 @@ class userRepository {
     }
   }
 
-  async getByEmail(userEmail){
+  async getByEmail(userEmail) {
     try {
-        const user = await User.findOne({
-            where:{
-                email:userEmail
-            }
-        })
-        return user;
+      const user = await User.findOne({
+        where: {
+          email: userEmail,
+        },
+      });
+      return user;
     } catch (err) {
-        console.log("error in repository layer")
-        throw {err}
+      console.log("error in repository layer");
+      throw { err };
+    }
+  }
+
+  async isAdmin(userId) {
+    try {
+      const response = await User.findByPk(userId);
+      if (!response) {
+        throw { err: "the userid is not in DB" };
+      }
+      const adminRoleCheck = await Role.findAll({
+        where: {
+          name: "ADMIN",
+        },
+      });
+      if (!adminRoleCheck) {
+        throw { err: "the role with ADMIN name does not exist" };
+      }
+      return response.hasRole(adminRoleCheck);
+    } catch (err) {
+      console.log("error in repository layer");
+      throw { err };
     }
   }
 }

@@ -7,6 +7,8 @@ const UserService = require("./service/user-service");
 const userService = require("./service/user-service");
 const jwt = require("jsonwebtoken");
 const { sequelize } = require("./models");
+const userRepository = require("./repository/user-repository");
+const {User,Role} = require("./models/index");
 
 const app = express();
 
@@ -14,9 +16,9 @@ const startServer = async () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use("/api", apiRoutes);
-  if(DB_SYNC){
-    sequelize.sync({alter:true})
-  }
+  const res1 = await User.findByPk(3)
+  const res2 = await Role.findByPk(1)
+  res1.addRole(res2)
   app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   });

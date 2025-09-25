@@ -61,8 +61,33 @@ const isAuthorised = async (req, res) => {
     });
   }
 };
+
+const isAdmin = async(req,res)=>{
+  try {
+    const response = await UserService.isAdmin(req.body.userid);
+    if(!response){
+      throw {error: "the inputed userid is not Admin"}
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Authorization Successful",
+      data: response,
+      err: {},
+    });
+  } catch (err) {
+    onsole.log("Error in authorization controller:", err);
+    return res.status(401).json({
+      message: "Authorization failed",
+      success: false,
+      err: err.message || "Invalid token",
+      data: {},
+    });
+  }
+}
+
 module.exports = {
   create,
   signIn,
-  isAuthorised
+  isAuthorised,
+  isAdmin
 };

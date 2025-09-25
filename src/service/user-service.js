@@ -18,24 +18,23 @@ class userService {
   }
 
   async isAuthorised(token) {
-  try {
-    const tokenVerifyResponse = this.verifyToken(token); 
-    if (!tokenVerifyResponse) {
-      throw new Error("Token verification on authorization failed");
-    }
+    try {
+      const tokenVerifyResponse = this.verifyToken(token);
+      if (!tokenVerifyResponse) {
+        throw new Error("Token verification on authorization failed");
+      }
 
-    const response = await this.userRepository.get(tokenVerifyResponse.id);
-    if (!response) {
-      throw new Error("The token corresponding email does not exist");
-    }
+      const response = await this.userRepository.get(tokenVerifyResponse.id);
+      if (!response) {
+        throw new Error("The token corresponding email does not exist");
+      }
 
-    return response.id;
-  } catch (error) {
-    console.log("Error in service layer:", error);
-    throw error;
+      return response.id;
+    } catch (error) {
+      console.log("Error in service layer:", error);
+      throw error;
+    }
   }
-}
-
 
   async signIn(userEmail, userPassword) {
     try {
@@ -85,6 +84,16 @@ class userService {
       return response;
     } catch (err) {
       console.log("the comparePassword is not working");
+      throw err;
+    }
+  }
+
+  async isAdmin(userId){
+    try {
+      const userDetails = await this.userRepository.isAdmin(userId);
+      return userDetails;
+    } catch (err) {
+      console.log("Error in service layer", err);
       throw err;
     }
   }
